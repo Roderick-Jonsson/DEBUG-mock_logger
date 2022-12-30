@@ -29,9 +29,6 @@ func main() {
 		time.Sleep(timevar)
 
 		randomInt := min + rand.Intn(max-min+1)
-
-		println(randomInt)
-
 		switch randomInt {
 		case 1:
 			sugar.Error("This is a error")
