@@ -1,15 +1,45 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	"log"
+	"math/rand"
+	"time"
+
+	"go.uber.org/zap"
 )
 
 func main() {
-	println("=== STARTING APP MOCK LOGGER ===")
-	log.Trace("Something very low level.")
-	log.Debug("Useful debugging information.")
-	log.Info("Something noteworthy happened!")
-	log.Warn("You should probably take a look at this.")
-	log.Error("Something failed but I'm not quitting.")
-	println("=== ENDING APP MOCK LOGGER ===")
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sugar := logger.Sugar()
+
+	msgPerMinute := 30
+
+	timevar := time.Duration(60/msgPerMinute) * time.Second
+
+	min := 1
+	max := 3
+
+	rand.Seed(time.Now().UnixNano())
+
+	for {
+		time.Sleep(timevar)
+
+		randomInt := min + rand.Intn(max-min+1)
+
+		println(randomInt)
+
+		switch randomInt {
+		case 1:
+			sugar.Error("This is a error")
+		case 2:
+			sugar.Warn("This is a warning")
+		case 3:
+			sugar.Info("This is an info")
+		}
+
+	}
 }
